@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './Toast.module.css';
 
 const ToastContext = createContext();
@@ -20,20 +21,23 @@ export const ToastProvider = ({ children }) => {
     };
 
     return (
-        <ToastContext.Provider value={addToast}>
+        <ToastContext.Provider value={{ addToast }}>
             {children}
-            <div className={styles.toastContainer}>
-                {toasts.map(toast => (
-                    <div
-                        key={toast.id}
-                        className={`${styles.toast} ${styles[toast.type]}`}
-                        onClick={() => removeToast(toast.id)}
-                    >
-                        {toast.type === 'success' && <span style={{ color: '#10b981' }}>✓</span>}
-                        {toast.message}
-                    </div>
-                ))}
-            </div>
+            {createPortal(
+                <div className={styles.toastContainer}>
+                    {toasts.map(toast => (
+                        <div
+                            key={toast.id}
+                            className={`${styles.toast} ${styles[toast.type]}`}
+                            onClick={() => removeToast(toast.id)}
+                        >
+                            {toast.type === 'success' && <span style={{ color: '#10b981' }}>✓</span>}
+                            {toast.message}
+                        </div>
+                    ))}
+                </div>,
+                document.body
+            )}
         </ToastContext.Provider>
     );
 };

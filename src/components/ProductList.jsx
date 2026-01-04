@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import styles from './ProductList.module.css';
 import { useProducts } from '../hooks/useProducts';
+import { useCart } from '../hooks/useCart';
 import { useDebounce } from '../hooks/useDebounce';
 import ProductCard from './ProductCard';
 import FilterBar from './FilterBar';
@@ -9,6 +10,7 @@ import Cart from './Cart';
 
 const ProductList = () => {
     const { products, loading, error } = useProducts();
+    const { cart } = useCart();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [sortOrder, setSortOrder] = useState('');
@@ -58,7 +60,7 @@ const ProductList = () => {
             <header className={styles.header}>
                 <h1 className={styles.logo}>MiniStore</h1>
                 <button className={styles.cartBtn} onClick={() => setIsCartOpen(!isCartOpen)}>
-                    Cart
+                    Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
                 </button>
             </header>
 
